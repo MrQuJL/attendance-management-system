@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace = "com.qjl.attendance.mapper.AdminMapper"> 
+
+	<!-- 验证用户登录 -->
+	<select id="loginAdmin" parameterType="admin" resultType="admin">
+		SELECT ADMINID adminid, ADMINACCOUNT adminaccount, ADIMINPWD adminpwd,
+		ADMINSTATE adminstate, ADMINRIGHT adminright FROM ATT_ADMIN
+		<where>
+			<if test="adminaccount != null">
+				AND ADMINACCOUNT = #{adminaccount}
+			</if>
+			<if test="adminpwd != null">
+				AND ADIMINPWD = #{adminpwd}
+			</if>
+			<if test="adminright != null">
+				AND ADMINRIGHT = #{adminright}
+			</if>
+		</where>
+	</select>
+
+	<!-- 根据id查询用户信息 -->
+	<select id="getAdminById" parameterType="long" resultType="admin">
+		SELECT ADMINID adminid, ADMINACCOUNT adminaccount,
+		ADIMINPWD adminpwd, ADMINSTATE adminstate, ADMINRIGHT adminright
+		FROM ATT_ADMIN
+		WHERE ADMINID = #{adminid}
+	</select>
+
+	<!-- 查询满足条件的用户列表 -->
+	<select id="listAllAdmin" resultType="adminDto">
+		SELECT ADMINID adminid, ADMINACCOUNT adminaccount, ADIMINPWD adminpwd,
+		CASE WHEN ADMINSTATE = 1 THEN '正常' ELSE '停用' END adminstate,
+		CASE WHEN ADMINRIGHT = 1 THEN '超级管理员' ELSE '考勤员' END adminright
+		FROM ATT_ADMIN
+		ORDER BY ADMINID
+	</select>
+
+	<!-- 查询出所有的考勤员 -->
+	<select id="listAdminWork" resultType="admin">
+		SELECT ADMINID adminid, ADMINACCOUNT adminaccount, ADIMINPWD adminpwd,
+		ADMINSTATE adminstate, ADMINRIGHT adminright FROM ATT_ADMIN
+		WHERE ADMINRIGHT = 0
+	</select>
+
+	<!-- 添加用户 -->
+	<insert id="insertAdmin" parameterType="admin">
+		INSERT INTO ATT_ADMIN(ADMINACCOUNT, ADIMINPWD, ADMINSTATE, ADMINRIGHT)
+		VALUES(#{adminaccount}, #{adminpwd}, #{adminstate}, #{adminright})
+	</insert>
+	
+	<!-- 删除用户 -->
+	<delete id="deleteAdmin" parameterType="long">
+		DELETE FROM ATT_ADMIN WHERE ADMINID = #{adminid}
+	</delete>
+	
+	<!-- 修改用户 -->
+	<update id="updateAdmin" parameterType="admin">
+		UPDATE ATT_ADMIN
+		<set>
+			<if test="adminaccount != null">
+				ADMINACCOUNT = #{adminaccount},
+			</if>
+			<if test="adminstate != null">
+				ADMINSTATE = #{adminstate},
+			</if>
+			<if test="adminright != null">
+				ADMINRIGHT = #{adminright},
+			</if>
+		</set>
+		WHERE ADMINID = #{adminid}
+	</update>
+
+	<!-- 更新密码 -->
+	<update id="updatePwd" parameterType="admin">
+		UPDATE ATT_ADMIN SET
+		ADIMINPWD = #{adminpwd}
+		WHERE ADMINID = #{adminid}
+	</update>
+
+</mapper>
