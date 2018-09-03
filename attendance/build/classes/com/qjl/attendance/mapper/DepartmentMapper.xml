@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace = "com.qjl.attendance.mapper.DepartmentMapper"> 
+	
+	<!-- department表的所有字段 -->
+	<sql id="all_departemtn_columns_orm">
+		DEPARTMENTID, DEPARTMENTNAME, STARTTIMEAM, ENDTIMEAM,
+		STARTTIMEPM, ENDTIMEPM, PARENTID
+	</sql>
+	
+	<!-- 根据id获取部门信息 -->
+	<select id="getDeptById" parameterType="long" resultType="department">
+		SELECT DEPARTMENTID departmentid, DEPARTMENTNAME departmentname,
+		STARTTIMEAM starttimeam, ENDTIMEAM endtimeam, STARTTIMEPM starttimepm,
+		ENDTIMEPM endtimepm, PARENTID parentid
+		FROM ATT_DEPARTMENT
+		WHERE DEPARTMENTID = #{departmentid}
+	</select>
+	
+	<!-- 查询满足条件的部门列表 -->
+	<select id="listDepartment" resultType="department">
+		SELECT <include refid="all_departemtn_columns_orm" />
+		FROM ATT_DEPARTMENT
+		<where>
+			<if test="parentid != null">
+				AND PARENTID = #{parentid}
+			</if>
+		</where>
+	</select>
+
+	<!-- 以树形结构来存储查询出的部门列表 -->
+	<select id="listDeptTree" resultType="treeDto">
+		SELECT DEPARTMENTID id, PARENTID pId, DEPARTMENTNAME name
+		FROM ATT_DEPARTMENT
+		ORDER BY DEPARTMENTID
+	</select>
+
+	<!-- 统计父部门id为parentid的部门数量 -->
+	<select id="countParentDept" parameterType="long" resultType="int">
+		SELECT COUNT(*) FROM ATT_DEPARTMENT
+		WHERE PARENTID = #{parentId}
+	</select>
+
+	<!-- 添加部门 -->
+	<insert id="insertDepartment" parameterType="department">
+		INSERT INTO ATT_DEPARTMENT(DEPARTMENTNAME, STARTTIMEAM, ENDTIMEAM,
+		STARTTIMEPM, ENDTIMEPM, PARENTID)
+		VALUES(#{departmentname}, #{starttimeam}, #{endtimeam}, 
+		#{starttimepm}, #{endtimepm}, #{parentid})
+	</insert>
+
+	<!-- 修改部门 -->
+	<update id="updateDepartment" parameterType="department">
+		UPDATE ATT_DEPARTMENT
+		<set>
+			<if test="departmentname != null">
+				DEPARTMENTNAME = #{departmentname},
+			</if>
+			<if test="starttimeam != null">
+				STARTTIMEAM = #{starttimeam},
+			</if>
+			<if test="endtimeam != null">
+				ENDTIMEAM = #{endtimeam},
+			</if>
+			<if test="starttimepm != null">
+				STARTTIMEPM = #{starttimepm},
+			</if>
+			<if test="endtimepm != null">
+				ENDTIMEPM = #{endtimepm},
+			</if>
+			<if test="parentid != null">
+				PARENTID = #{parentid},
+			</if>
+		</set>
+		WHERE DEPARTMENTID = #{departmentid}
+	</update>
+	
+	<!-- 删除部门 -->
+	<delete id="deleteDepartment" parameterType="long">
+		DELETE FROM ATT_DEPARTMENT
+		WHERE DEPARTMENTID = #{departmentid}
+	</delete>
+
+</mapper>
