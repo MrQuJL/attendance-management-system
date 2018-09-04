@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace = "com.qjl.attendance.mapper.EmployeeMapper"> 
+	
+	<!-- employee表的所有字段 -->
+	<sql id="all_employee_columns_orm">
+		EMPLOYEEID employeeid, EMPLOYEENAME employeename,
+		EMPLOYEEGENDER employeegender, POSITIONID positionid,
+		DEPARTMENTID departmentid, CARDNUMBER cardnumber,
+		EMPLOYESTATE employestate, EMPLOYEEMEMO employeememo
+	</sql>
+	
+	<!-- 根据id查询员工信息 -->
+	<select id="getEmployeeById" parameterType="long" resultType="employee">
+		SELECT <include refid="all_employee_columns_orm" />
+		FROM ATT_EMPLOYEE
+		WHERE EMPLOYEEID = #{employeeid}
+	</select>
+	
+	<!-- 查询满足条件的employee列表 -->
+	<select id="listEmployee" parameterType="employee" resultType="employee">
+		SELECT <include refid="all_employee_columns_orm" />
+		FROM ATT_EMPLOYEE
+		<where>
+			<if test="employeename != null">
+				AND EMPLOYEENAME LIKE '%${employeename}%'
+			</if>
+			<if test="departmentid != null">
+				AND DEPARTMENTID = #{departmentid}
+			</if>
+		</where>
+		ORDER BY EMPLOYEEID
+	</select>
+	
+	<!-- 查询满足条件的employee列表 -->
+	<select id="listEmployeeDto" parameterType="employee" resultType="employeeDto">
+		SELECT EMPLOYEEID employeeid, EMPLOYEENAME employeename,
+		CASE WHEN EMPLOYEEGENDER = 1 THEN '男' ELSE '女' END chgender,
+		POSITIONNAME positionname, DEPARTMENTNAME departmentname, CARDNUMBER cardnumber,
+		CASE WHEN EMPLOYESTATE = 1 THEN '正常' ELSE '冻结' END chstate,
+		EMPLOYEEMEMO employeememo
+		FROM ATT_EMPLOYEE, ATT_POSITION, ATT_DEPARTMENT
+		<where>
+			<if test="1 == 1">
+				AND ATT_EMPLOYEE.POSITIONID = ATT_POSITION.POSITIONID
+			</if>
+			<if test="1 == 1">
+				AND ATT_EMPLOYEE.DEPARTMENTID = ATT_DEPARTMENT.DEPARTMENTID
+			</if>
+			<if test="employeename != null">
+				AND EMPLOYEENAME LIKE '%${employeename}%'
+			</if>
+			<if test="departmentid != null">
+				AND ATT_EMPLOYEE.DEPARTMENTID = #{departmentid}
+			</if>
+		</where>
+		ORDER BY EMPLOYEEID
+	</select>
+	
+	<!-- 添加员工 -->
+	<insert id="insertEmployee" parameterType="employee">
+		INSERT INTO ATT_EMPLOYEE(EMPLOYEENAME, EMPLOYEEGENDER,
+		POSITIONID, DEPARTMENTID, CARDNUMBER, EMPLOYESTATE, EMPLOYEEMEMO)
+		VALUES(#{employeename}, #{employeegender}, #{positionid},
+		#{departmentid}, #{cardnumber}, #{employestate}, #{employeememo})
+	</insert>
+	
+	<!-- 修改员工 -->
+	<update id="updateEmployee" parameterType="employee">
+		UPDATE ATT_EMPLOYEE SET
+		EMPLOYEENAME = #{employeename},
+		EMPLOYEEGENDER = #{employeegender},
+		POSITIONID = #{positionid},
+		DEPARTMENTID = #{departmentid},
+		CARDNUMBER = #{cardnumber},
+		EMPLOYESTATE = #{employestate},
+		EMPLOYEEMEMO = #{employeememo}
+		WHERE EMPLOYEEID = #{employeeid}
+	</update>
+	
+	<!-- 删除员工 -->
+	<delete id="deleteEmployee" parameterType="int">
+		DELETE FROM ATT_EMPLOYEE
+		WHERE EMPLOYEEID = #{employeeId}
+	</delete>
+	
+</mapper>
