@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace = "com.qjl.attendance.mapper.AttendanceTypeMapper"> 
+
+	<!-- 查询出所有的请假类型 -->
+	<select id="listAttendanceType" resultType="AttendanceType">
+		SELECT TYPEID typeid, TYPENAME typename, TYPECATEGORY typecategory
+		FROM ATT_ATTENDANCETYPE
+		WHERE TYPECATEGORY = 1
+	</select>
+	
+</mapper>
