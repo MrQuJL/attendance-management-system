@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace = "com.qjl.attendance.mapper.PopedomMapper">
+	
+	<!-- 查询出当前考勤员所拥有的部门权限 -->
+	<select id="listAllWorkerPerm" parameterType="long" resultType="long">
+		SELECT DEPARTMENTID FROM ATT_ADMINPOPEDOM
+		WHERE ADMINID = #{workerId}
+	</select>
+	
+	<!-- 删除当前考勤员对所有部门的权限 -->
+	<delete id="deleteAllWorkerPerm" parameterType="long">
+		DELETE FROM ATT_ADMINPOPEDOM
+		WHERE ADMINID = #{workerId}
+	</delete>
+	
+	<!-- 向数据库中增加一个考勤员对某个部门的权限 -->
+	<insert id="insertPerm" parameterType="adminPopedom">
+		INSERT INTO ATT_ADMINPOPEDOM(DEPARTMENTID, ADMINID)
+		VALUES(#{departmentid}, #{adminid})
+	</insert>
+	
+</mapper>
