@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace = "com.qjl.attendance.mapper.PositionMapper">
+	
+	<!-- department表的所有字段 -->
+	<sql id="all_position_columns_orm">
+		POSITIONID positionid, POSITIONNAME positionname
+	</sql>
+	
+	<!-- 根据职位编号获取职位信息 -->
+	<select id="getPositionById" parameterType="int" resultType="position">
+		SELECT <include refid="all_position_columns_orm" />
+		FROM ATT_POSITION WHERE POSITIONID = #{positionid}
+	</select>
+	
+	<!-- 查询满足条件的医生列表 -->
+	<select id="listPosition" resultType="position">
+		SELECT <include refid="all_position_columns_orm" />
+		FROM ATT_POSITION
+	</select>
+	
+	<!-- 添加职位 -->
+	<insert id="insertPosition" parameterType="string">
+		INSERT INTO ATT_POSITION(POSITIONNAME)
+		VALUES(#{positionName})
+	</insert>
+	
+	<!-- 删除职位 -->
+	<delete id="deletePosition" parameterType="int">
+		DELETE FROM ATT_POSITION
+		WHERE POSITIONID = #{positionId}
+	</delete>
+	
+	<!-- 修改职位 -->
+	<update id="updatePosition" parameterType="position">
+		UPDATE ATT_POSITION
+		SET POSITIONNAME = #{positionname}
+		WHERE POSITIONID = #{positionid}
+	</update>
+	
+</mapper>
