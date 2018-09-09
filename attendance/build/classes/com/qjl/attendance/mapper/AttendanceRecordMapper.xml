@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace = "com.qjl.attendance.mapper.AttendanceRecordMapper">
+	<!-- 查询满足条件的考勤记录 -->
+	<select id="listAttRecord" parameterType="attRecordParam" resultType="attendanceRecord">
+		SELECT A.ATTENDANCEID, A.EMPLOYEEID, A.ATTENDANCEDATE, A.ATTENDANCEFLAG,
+		A.ATTENDANCETYPEID, A.ATTENDANCEMEMO, A.ADMINID, A.NOTEID
+		FROM ATT_ATTENDANCERECORD A, ATT_EMPLOYEE B, ATT_DEPARTMENT C
+		<where>
+			<if test="1 == 1">
+				AND A.EMPLOYEEID = B.EMPLOYEEID
+				AND B.DEPARTMENTID = C.DEPARTMENTID
+			</if>
+			<if test="attDate != null">
+				AND A.ATTENDANCEDATE = #{attDate}
+			</if>
+			<if test="attFlag != null">
+				AND A.ATTENDANCEFLAG = #{attFlag}
+			</if>
+			<if test="deptId != null">
+				AND C.DEPARTMENTID = #{deptId}
+			</if>
+		</where>
+	</select>
+	
+	<!-- 添加一条考勤记录 -->
+	<insert id="insertAttRecord" parameterType="attendanceRecord">
+		INSERT INTO ATT_ATTENDANCERECORD(EMPLOYEEID, ATTENDANCEDATE,
+		ATTENDANCEFLAG, ATTENDANCETYPEID, ATTENDANCEMEMO, ADMINID, NOTEID)
+		VALUES(#{employeeid}, #{attendancedate}, #{attendanceflag},
+		#{attendancetypeid}, #{attendancememo}, #{adminid}, 
+			<choose>
+				<when test="noteid != null">
+					#{noteid}
+				</when>
+				<otherwise>
+					null
+				</otherwise>
+			</choose>
+		)
+	</insert>
+	
+	<!-- 统计满足条件的考勤记录数目 -->
+	<select id="countAttRecord" parameterType="attendanceRecord" resultType="int">
+		SELECT COUNT(*) FROM ATT_ATTENDANCERECORD
+		<where>
+			<if test="employeeid != null">
+				AND EMPLOYEEID = #{employeeid}
+			</if>
+			<if test="attendancedate != null">
+				AND ATTENDANCEDATE = #{attendancedate}
+			</if>
+			<if test="attendanceflag != null">
+				AND ATTENDANCEFLAG = #{attendanceflag}
+			</if>
+		</where>
+	</select>
+	
+	<!-- 删除满足条件的考勤记录 -->
+	<delete id="deleteAttRecord" parameterType="attendanceRecord">
+		DELETE FROM ATT_ATTENDANCERECORD
+		<where>
+			<if test="employeeid != null">
+				AND EMPLOYEEID = #{employeeid}
+			</if>
+			<if test="attendancedate != null">
+				AND ATTENDANCEDATE = #{attendancedate}
+			</if>
+			<if test="attendanceflag != null">
+				AND ATTENDANCEFLAG = #{attendanceflag}
+			</if>
+		</where>
+	</delete>
+	
+</mapper>
