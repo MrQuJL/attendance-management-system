@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace = "com.qjl.attendance.mapper.AttendanceSummaryMapper"> 
+
+	<select id="listAttendanceSummary" resultType="attendanceSummary">
+		SELECT A.EMPLOYEEID employeeid, DEPARTMENTNAME departmentname, EMPLOYEENAME employeename,
+		COUNT(CASE TYPENAME WHEN '迟到' THEN 1 ELSE NULL END) chidao,
+		COUNT(CASE TYPENAME WHEN '病假' THEN 1 ELSE NULL END) bingjia,
+		COUNT(CASE TYPENAME WHEN '事假' THEN 1 ELSE NULL END) shijia,
+		COUNT(CASE TYPENAME WHEN '产假' THEN 1 ELSE NULL END) chanjia,
+		COUNT(CASE TYPENAME WHEN '丧假' THEN 1 ELSE NULL END) sangjia,
+		COUNT(CASE TYPENAME WHEN '婚假' THEN 1 ELSE NULL END) hunjia,
+		COUNT(CASE TYPENAME WHEN '公休' THEN 1 ELSE NULL END) gongxiu,
+		COUNT(CASE TYPENAME WHEN '出差' THEN 1 ELSE NULL END) chuchai,
+		COUNT(CASE TYPENAME WHEN '旷工' THEN 1 ELSE NULL END) kuanggong,
+		COUNT(CASE TYPENAME WHEN '出勤' THEN 1 ELSE NULL END) chuqin
+		FROM ATT_ATTENDANCERECORD A, ATT_EMPLOYEE B,
+		ATT_DEPARTMENT C, ATT_ATTENDANCETYPE D
+		WHERE A.EMPLOYEEID = B.EMPLOYEEID AND
+		B.DEPARTMENTID = C.DEPARTMENTID AND
+		A.ATTENDANCETYPEID = D.TYPEID AND
+		TO_CHAR(ATTENDANCEDATE, 'yyyy') = #{0} AND
+		TO_CHAR(ATTENDANCEDATE, 'mm') = #{1}
+		GROUP BY DEPARTMENTNAME, EMPLOYEENAME, A.EMPLOYEEID
+	</select>
+
+</mapper>
