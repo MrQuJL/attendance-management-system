@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace = "com.qjl.attendance.mapper.TodayAttendanceMapper"> 
+
+	<!-- 查询今日考勤信息 -->
+	<select id="listTodayAttendance" parameterType="todayAttendanceParam" resultType="todayAttendance">
+		SELECT EMPLOYEENAME employeeName, DEPARTMENTNAME departmentName,
+		TO_CHAR(ATTENDANCEDATE, 'yyyy-mm-dd') attendanceDate, 
+		TO_CHAR(ATTENDANCEDATE, 'yyyy-mm-dd') week, TYPENAME attStatus
+		FROM ATT_ATTENDANCERECORD A, ATT_EMPLOYEE B,
+		ATT_DEPARTMENT C, ATT_ATTENDANCETYPE D
+		WHERE A.EMPLOYEEID = B.EMPLOYEEID AND
+		B.DEPARTMENTID = C.DEPARTMENTID AND 
+		A.ATTENDANCETYPEID = D.TYPEID
+		<if test="deptId != null">
+			AND C.DEPARTMENTID = #{deptId}
+		</if>
+		<if test="attFlag != null">
+			AND A.ATTENDANCEFLAG = #{attFlag}
+		</if>
+		<if test="curDate != null">
+			AND A.ATTENDANCEDATE = #{curDate}
+		</if>
+		<if test="attStatus != null">
+			<if test="attStatus == 1"> <!-- 正常出勤 -->
+				AND (D.TYPEID = 1 OR D.TYPEID = 2 OR D.TYPEID = 5)
+			</if>
+			<if test="attStatus == 2"> <!-- 未正常出勤 -->
+				AND (D.TYPEID != 1 AND D.TYPEID != 2 AND D.TYPEID != 5)
+			</if>
+		</if>
+	</select>
+
+</mapper>

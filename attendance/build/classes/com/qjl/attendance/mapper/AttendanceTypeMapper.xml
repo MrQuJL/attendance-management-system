@@ -12,4 +12,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		WHERE TYPECATEGORY = 1
 	</select>
 	
+	<!-- 查询出所有的考勤类型 -->
+	<select id="listAllAttType" resultType="AttendanceType">
+		SELECT TYPEID typeid, TYPENAME typename, TYPECATEGORY typecategory
+		FROM ATT_ATTENDANCETYPE
+	</select>
+	
+	<!-- 根据单据类型名称查询对应的类型id -->
+	<select id="getAttTypeIdByName" parameterType="string" resultType="long">
+		SELECT TYPEID typeid FROM ATT_ATTENDANCETYPE
+		WHERE TYPENAME = #{typeName}
+	</select>
+	
 </mapper>
