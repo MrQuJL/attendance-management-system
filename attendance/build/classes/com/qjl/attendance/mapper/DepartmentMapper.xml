@@ -18,6 +18,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		ENDTIMEPM endtimepm, PARENTID parentid
 		FROM ATT_DEPARTMENT
 		WHERE DEPARTMENTID = #{departmentid}
+		ORDER BY DEPARTMENTID
 	</select>
 	
 	<!-- 查询满足条件的部门列表 -->
@@ -29,6 +30,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				AND PARENTID = #{parentid}
 			</if>
 		</where>
+		ORDER BY DEPARTMENTID
 	</select>
 
 	<!-- 以树形结构来存储查询出的部门列表 -->

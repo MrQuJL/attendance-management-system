@@ -72,4 +72,11 @@ public class Department {
 		this.parentid = parentid;
 	}
 
+	@Override
+	public String toString() {
+		return "Department [departmentid=" + departmentid + ", departmentname=" + departmentname + ", starttimeam="
+				+ starttimeam + ", endtimeam=" + endtimeam + ", starttimepm=" + starttimepm + ", endtimepm=" + endtimepm
+				+ ", parentid=" + parentid + "]";
+	}
+	
 }
