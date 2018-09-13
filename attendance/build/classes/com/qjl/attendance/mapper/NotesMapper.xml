@@ -10,20 +10,143 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		SELECT NOTEID noteid, FILLINTIME fillintime, A.EMPLOYEENAME employeename,
 		TYPENAME notetypename, STARTDATE startdate, ENDDATE enddate,
 		B.EMPLOYEENAME proxyname
-		FROM ATT_EMPLOYEE A, ATT_EMPLOYEE B, ATT_ATTENDANCETYPE C, ATT_NOTES D
-		WHERE D.EMPLOYEEID = A.EMPLOYEEID AND D.PROXYID = B.EMPLOYEEID AND
-		D.NOTETYPEID = C.TYPEID
+		FROM ATT_EMPLOYEE A, ATT_EMPLOYEE B,
+		ATT_ATTENDANCETYPE C, ATT_NOTES D,
+		ATT_DEPARTMENT E
+		<where>
+			<if test="1 == 1">
+				AND D.EMPLOYEEID = A.EMPLOYEEID
+			</if>
+			<if test="1 == 1">
+				AND D.PROXYID = B.EMPLOYEEID
+			</if>
+			<if test="1 == 1">
+				AND D.NOTETYPEID = C.TYPEID 
+			</if>
+			<if test="1 == 1">
+				AND A.DEPARTMENTID = E.DEPARTMENTID
+			</if>
+			<if test="noteTypeId != null">
+				AND C.TYPEID = #{noteTypeId}
+			</if>
+			<if test="deptId != null">
+				AND E.DEPARTMENTID = #{deptId}
+			</if>
+			<if test="applyDate != null">
+				AND D.FILLINTIME = #{applyDate}
+			</if>
+			<if test="empName != null">
+				AND A.EMPLOYEENAME LIKE '%${empName}%'
+			</if>
+			<if test="empId != null">
+				AND A.EMPLOYEEID = #{empId}
+			</if>
+		</where>
+		ORDER BY NOTEID
+	</select>
+	
+	<!-- 查询除了某个类型以外的单据列表 -->
+	<select id="listNotesExecludeType" parameterType="notesQueryParam" resultType="notesDto">
+		SELECT NOTEID noteid, FILLINTIME fillintime, A.EMPLOYEENAME employeename,
+		TYPENAME notetypename, STARTDATE startdate, ENDDATE enddate,
+		B.EMPLOYEENAME proxyname
+		FROM ATT_EMPLOYEE A, ATT_EMPLOYEE B,
+		ATT_ATTENDANCETYPE C, ATT_NOTES D,
+		ATT_DEPARTMENT E
+		<where>
+			<if test="1 == 1">
+				AND D.EMPLOYEEID = A.EMPLOYEEID
+			</if>
+			<if test="1 == 1">
+				AND D.PROXYID = B.EMPLOYEEID
+			</if>
+			<if test="1 == 1">
+				AND D.NOTETYPEID = C.TYPEID 
+			</if>
+			<if test="1 == 1">
+				AND A.DEPARTMENTID = E.DEPARTMENTID
+			</if>
+			<if test="noteTypeId != null">
+				AND C.TYPEID != #{noteTypeId}
+			</if>
+			<if test="deptId != null">
+				AND E.DEPARTMENTID = #{deptId}
+			</if>
+			<if test="applyDate != null">
+				AND D.FILLINTIME = #{applyDate}
+			</if>
+			<if test="empName != null">
+				AND A.EMPLOYEENAME LIKE '%${empName}%'
+			</if>
+			<if test="empId != null">
+				AND A.EMPLOYEEID = #{empId}
+			</if>
+		</where>
+		ORDER BY NOTEID
+	</select>
+	
+	<!-- 根据单据id查询单据的类型名称 -->
+	<select id="getNoteTypeNameByNoteId" parameterType="long" resultType="string">
+		SELECT TYPENAME FROM ATT_ATTENDANCETYPE A, ATT_NOTES B
+		WHERE B.NOTETYPEID = A.TYPEID AND B.NOTEID = #{noteid}
 	</select>
 
-	<!-- 添加一条请假单 -->
+	<!-- 根据单据id查询单据的详细信息 -->
+	<select id="getNotesByNoteId" parameterType="long" resultType="notes">
+		SELECT NOTEID noteid, EMPLOYEEID employeeid, NOTETYPEID notetypeid,
+		CAUSE cause, FILLINTIME fillintime, DIRECTORSIGN directorsign,
+		ADMINISTRATIONSIGN administrationsign, PRESIDENTSIGN presidentsign,
+		STARTDATE startdate, STARTTIME starttime, ENDDATE enddate, ENDTIME endtime,
+		PROXYID proxyid, NOTEMEMO notememo, OPERATORID operatorid, PROJECTNAME projectname
+		FROM ATT_NOTES
+		WHERE NOTEID = #{noteId}
+	</select>
+
+	<!-- 添加请假单 -->
 	<insert id="insertNotes" parameterType="notes">
 		INSERT INTO ATT_NOTES(EMPLOYEEID, PROXYID, NOTETYPEID, FILLINTIME, CAUSE,
 		STARTDATE, STARTTIME, ENDDATE, ENDTIME, DIRECTORSIGN, ADMINISTRATIONSIGN,
 		PRESIDENTSIGN, OPERATORID)
 		VALUES(#{employeeid}, #{proxyid}, #{notetypeid}, #{fillintime}, #{cause}, 
-		#{startdate}, #{starttime}, #{enddate}, #{endtime}, #{directorsign}, #{administrationsign}, 
-		#{presidentsign}, #{operatorid})
+		#{startdate}, #{starttime}, #{enddate}, #{endtime}, 
+		<choose>
+			<when test="directorsign == null">
+				null,
+			</when>
+			<otherwise>
+				#{directorsign}, 
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="administrationsign == null">
+				null,
+			</when>
+			<otherwise>
+				#{administrationsign}, 
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="presidentsign == null">
+				null,
+			</when>
+			<otherwise>
+				#{presidentsign}, 
+			</otherwise>
+		</choose>
+		#{operatorid})
 	</insert>
+
+	<!-- 修改单据 -->
+	<update id="updateNotes" parameterType="notes">
+		UPDATE ATT_NOTES SET
+		EMPLOYEEID = #{employeeid}, NOTETYPEID = #{notetypeid},
+		CAUSE = #{cause}, FILLINTIME = #{fillintime},
+		DIRECTORSIGN = #{directorsign}, ADMINISTRATIONSIGN = #{administrationsign},
+		PRESIDENTSIGN = #{presidentsign}, STARTDATE = #{startdate},
+		STARTTIME = #{starttime}, ENDDATE = #{enddate},
+		ENDTIME = #{endtime}, PROXYID = #{proxyid}, OPERATORID = #{operatorid}
+		WHERE NOTEID = #{noteid}
+	</update>
 
 	<!-- 删除一条请假单 -->
 	<delete id="deleteNotes" parameterType="long">
