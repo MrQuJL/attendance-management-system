@@ -117,13 +117,17 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping("/updatePwd")
-	public @ResponseBody Map<String, Object> updatePwd(Admin admin) {
+	public @ResponseBody Map<String, Object> updatePwd(Admin admin, HttpSession session) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		
 		boolean flag = adminService.updatePwd(admin);
 		
 		if (flag) {
-			resultMap.put("flag", 1);
+			resultMap.put("flag", 1); // 修改成功
+			// 刷新session中的用户信息
+			Admin sAdmin = (Admin) session.getAttribute("admin");
+			sAdmin.setAdminpwd(admin.getAdminpwd());
+			session.setAttribute("admin", sAdmin);
 		} else {
 			resultMap.put("flag", 0);
 		}
