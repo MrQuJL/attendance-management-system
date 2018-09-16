@@ -23,11 +23,39 @@ public interface INotesService {
 	List<NotesDto> listNotes(NotesQueryParam notesQueryParam);
 	
 	/**
+	 * 查询除了某个类型以外的单据列表
+	 * @param notesQueryParam 查询条件
+	 * @return
+	 */
+	List<NotesDto> listNotesExecludeType(NotesQueryParam notesQueryParam);
+	
+	/**
+	 * 根据单据id查询单据的类型名称
+	 * @param noteId
+	 * @return
+	 */
+	String getNoteTypeNameByNoteId(Long noteId);
+	
+	/**
+	 * 根据单据id查询单据的详细信息
+	 * @param noteId 单据id
+	 * @return 单据的详细信息
+	 */
+	Notes getNotesByNoteId(Long noteId);
+	
+	/**
 	 * 添加一条请假单
 	 * @param notes
 	 * @return
 	 */
 	int insertNotes(Notes notes);
+	
+	/**
+	 * 修改请假单
+	 * @param notes
+	 * @return
+	 */
+	int updateNotes(Notes notes);
 	
 	/**
 	 * 删除一条请假单

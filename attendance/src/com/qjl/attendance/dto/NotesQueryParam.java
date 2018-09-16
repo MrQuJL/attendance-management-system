@@ -19,6 +19,8 @@ public class NotesQueryParam {
 	
 	private String empName; // 员工姓名
 
+	private Long empId; // 员工id
+	
 	public Long getNoteTypeId() {
 		return noteTypeId;
 	}
@@ -49,6 +51,14 @@ public class NotesQueryParam {
 
 	public void setEmpName(String empName) {
 		this.empName = empName;
+	}
+
+	public Long getEmpId() {
+		return empId;
+	}
+
+	public void setEmpId(Long empId) {
+		this.empId = empId;
 	}
 	
 }
