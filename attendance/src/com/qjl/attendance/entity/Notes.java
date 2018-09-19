@@ -31,7 +31,7 @@ public class Notes {
     private Long proxyid;
 
     private String projectname;
-    
+
     private String notememo;
 
     private Long operatorid;
