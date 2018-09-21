@@ -14,12 +14,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="getPositionById" parameterType="int" resultType="position">
 		SELECT <include refid="all_position_columns_orm" />
 		FROM ATT_POSITION WHERE POSITIONID = #{positionid}
+		ORDER BY POSITIONID
 	</select>
 	
-	<!-- 查询满足条件的医生列表 -->
+	<!-- 查询满足条件的职位列表 -->
 	<select id="listPosition" resultType="position">
 		SELECT <include refid="all_position_columns_orm" />
 		FROM ATT_POSITION
+		ORDER BY POSITIONID
 	</select>
 	
 	<!-- 添加职位 -->

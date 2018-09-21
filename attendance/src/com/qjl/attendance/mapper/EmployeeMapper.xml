@@ -20,6 +20,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		WHERE EMPLOYEEID = #{employeeid}
 	</select>
 	
+	<!-- 统计该部门下的员工数目 -->
+	<select id="countEmployeeByDeptId" parameterType="long" resultType="int">
+		SELECT COUNT(*) FROM ATT_EMPLOYEE
+		WHERE DEPARTMENTID = #{deptId}
+	</select>
+	
 	<!-- 查询满足条件的employee列表 -->
 	<select id="listEmployee" parameterType="employee" resultType="employee">
 		SELECT <include refid="all_employee_columns_orm" />

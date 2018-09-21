@@ -22,6 +22,13 @@ public interface EmployeeMapper {
 	Employee getEmployeeById(Long employeeid);
 	
 	/**
+	 * 统计该部门下的员工数目
+	 * @param deptId 部门id
+	 * @return 该部门下的员工数目
+	 */
+	int countEmployeeByDeptId(Long deptId);
+	
+	/**
 	 * 查询所有的员工信息
 	 * @return
 	 */

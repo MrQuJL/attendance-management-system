@@ -19,4 +19,17 @@ public interface AttendanceTypeMapper {
 	 */
 	List<AttendanceType> listAttendanceType();
 	
+	/**
+	 * 查询出所有的考勤类型
+	 * @return
+	 */
+	List<AttendanceType> listAllAttType();
+	
+	/**
+	 * 根据单据类型名称查询对应的类型id
+	 * @param notesName
+	 * @return
+	 */
+	Long getAttTypeIdByName(String typeName);
+	
 }
