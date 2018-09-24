@@ -27,4 +27,14 @@ public class AttendanceTypeImpl implements IAttendanceTypeService {
 		return attendanceTypeMapper.listAttendanceType();
 	}
 
+	@Override
+	public List<AttendanceType> listAllAttType() {
+		return attendanceTypeMapper.listAllAttType();
+	}
+
+	@Override
+	public Long getAttTypeIdByName(String typeName) {
+		return attendanceTypeMapper.getAttTypeIdByName(typeName);
+	}
+
 }
