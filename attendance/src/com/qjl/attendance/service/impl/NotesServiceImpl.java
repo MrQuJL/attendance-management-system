@@ -30,10 +30,30 @@ public class NotesServiceImpl implements INotesService {
 	}
 
 	@Override
+	public List<NotesDto> listNotesExecludeType(NotesQueryParam notesQueryParam) {
+		return notesMapper.listNotesExecludeType(notesQueryParam);
+	}
+	
+	@Override
+	public String getNoteTypeNameByNoteId(Long noteId) {
+		return notesMapper.getNoteTypeNameByNoteId(noteId);
+	}
+	
+	@Override
+	public Notes getNotesByNoteId(Long noteId) {
+		return notesMapper.getNotesByNoteId(noteId);
+	}
+	
+	@Override
 	public int insertNotes(Notes notes) {
 		return notesMapper.insertNotes(notes);
 	}
 
+	@Override
+	public int updateNotes(Notes notes) {
+		return notesMapper.updateNotes(notes);
+	}
+	
 	@Override
 	public int deleteNotes(Long notesId) {
 		return notesMapper.deleteNotes(notesId);

@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.qjl.attendance.dto.TreeDto;
 import com.qjl.attendance.entity.Department;
 import com.qjl.attendance.mapper.DepartmentMapper;
+import com.qjl.attendance.mapper.EmployeeMapper;
 import com.qjl.attendance.service.IDepartmentService;
 
 /**
@@ -25,6 +26,9 @@ public class DepartmentServiceImpl implements IDepartmentService {
 
 	@Autowired
 	private DepartmentMapper departmentMapper;
+	
+	@Autowired
+	private EmployeeMapper employeeMapper;
 	
 	@Override
 	public Department getDeptById(Long id) {
@@ -51,14 +55,24 @@ public class DepartmentServiceImpl implements IDepartmentService {
 		return departmentMapper.updateDepartment(department);
 	}
 
+	/**
+	 * 0 -> 有子部门
+	 * -1 -> 有员工
+	 * 大于0 -> 正常删除
+	 */
 	@Override
 	@Transactional(isolation=Isolation.DEFAULT,propagation=Propagation.REQUIRED)
 	public int deleteDepartment(Long id) {
-		// 删除前先判断该部门是否有子部门
+		// 1.删除前先判断该部门是否有子部门
 		int childs = departmentMapper.countParentDept(id);
 		
 		if (childs != 0) { // 有子部门
 			return 0;
+		}
+		// 2.判断该部门下是否有员工
+		int empNum = employeeMapper.countEmployeeByDeptId(id);
+		if (empNum != 0) {
+			return -1;
 		}
 		
 		return departmentMapper.deleteDepartment(id);
